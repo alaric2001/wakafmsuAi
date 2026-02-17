@@ -2,6 +2,9 @@
 antigravity
 Web Donasi &amp; Wakaf Masjid Syamsul 'Ulum
 
+composer update
+php artisan key:generate
+
 db->mysql
 
 php artisan migrate --seed
