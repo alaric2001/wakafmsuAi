@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Carousel;
+use App\Models\Donasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class CarouselController extends Controller
 {
@@ -16,12 +19,21 @@ class CarouselController extends Controller
         return inertia('user/Home', ['data_carousel' => $data_carousel]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function adminIndex()
     {
-        //
+        $carousels = Carousel::latest()->get();
+        // Assuming Donasi model exists and has a title to select
+        $donationPrograms = Donasi::select('id', 'nama')->get()->map(function ($program) {
+            return [
+                'value' => '/donasi/' . $program->id,
+                'label' => $program->nama,
+            ];
+        });
+
+        return Inertia::render('admin/AdminCarousel', [
+            'carousels' => $carousels,
+            'donationPrograms' => $donationPrograms
+        ]);
     }
 
     /**
@@ -29,23 +41,25 @@ class CarouselController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'link' => 'required|string',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Carousel $carousel)
-    {
-        //
-    }
+        $filename = null;
+        if ($request->hasFile('foto')) {
+            // Store in public/images/carousel
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images/carousel'), $filename);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Carousel $carousel)
-    {
-        //
+        Carousel::create([
+            'foto' => $filename,
+            'link' => $request->link,
+        ]);
+
+        return redirect()->back()->with('success', 'Carousel created successfully.');
     }
 
     /**
@@ -53,7 +67,30 @@ class CarouselController extends Controller
      */
     public function update(Request $request, Carousel $carousel)
     {
-        //
+        $request->validate([
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'link' => 'required|string',
+        ]);
+
+        $filename = $carousel->foto;
+        if ($request->hasFile('foto')) {
+            // Delete old image if exists
+            if ($carousel->foto && file_exists(public_path('images/carousel/' . $carousel->foto))) {
+                unlink(public_path('images/carousel/' . $carousel->foto));
+            }
+
+            // Store new image
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images/carousel'), $filename);
+        }
+
+        $carousel->update([
+            'foto' => $filename,
+            'link' => $request->link,
+        ]);
+
+        return redirect()->back()->with('success', 'Carousel updated successfully.');
     }
 
     /**
@@ -61,6 +98,12 @@ class CarouselController extends Controller
      */
     public function destroy(Carousel $carousel)
     {
-        //
+        if ($carousel->foto && file_exists(public_path('images/carousel/' . $carousel->foto))) {
+            unlink(public_path('images/carousel/' . $carousel->foto));
+        }
+
+        $carousel->delete();
+
+        return redirect()->back()->with('success', 'Carousel deleted successfully.');
     }
 }

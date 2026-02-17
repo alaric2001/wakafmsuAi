@@ -23,7 +23,7 @@ Route::resource('carousels', CarouselController::class);
 // });
 
 Route::get('/donasi/{id}/pay', function ($id) {
-    return Inertia\Inertia::render('user/Pay', [
+    return Inertia::render('user/Pay', [
         'donasiId' => $id
     ]);
 })->name('donasi.pay');
@@ -45,6 +45,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/admin-dashboard', function () {
     return Inertia::render('admin/AdminDashboard');
 });
+
+Route::get('/admin-carousel', [CarouselController::class, 'adminIndex'])->name('admin.carousel.index');
+
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

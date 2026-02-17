@@ -47,22 +47,34 @@ export default function UserCarousel({ slides }) {
     //     },
     // ];
 
-    return(
+    return (
         <>
             <div className="container mx-auto p-4">
                 <div className="relative w-[1200px] mx-auto"> {/* Tambahkan relative di sini */}
                     <Slider {...settings}>
                         {slides.map(slide => (
                             <div key={slide.id}>
-                                <Link href={slide.link}>
-                                    <div className="relative mx-auto overflow-hidden w-[1200px] h-[300px] rounded-lg">
-                                        <img
-                                        src={`images/carousel/${slide.foto}`}
-                                        alt={`ini carousel-${slide.id}`}
-                                        className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                                        />
-                                    </div>
-                                </Link>
+                                {slide.link && (slide.link.startsWith('http') || slide.link.startsWith('//')) ? (
+                                    <a href={slide.link} target="_blank" rel="noopener noreferrer">
+                                        <div className="relative mx-auto overflow-hidden w-[1200px] h-[300px] rounded-lg">
+                                            <img
+                                                src={`images/carousel/${slide.foto}`}
+                                                alt={`ini carousel-${slide.id}`}
+                                                className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                                            />
+                                        </div>
+                                    </a>
+                                ) : (
+                                    <Link href={slide.link}>
+                                        <div className="relative mx-auto overflow-hidden w-[1200px] h-[300px] rounded-lg">
+                                            <img
+                                                src={`images/carousel/${slide.foto}`}
+                                                alt={`ini carousel-${slide.id}`}
+                                                className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                                            />
+                                        </div>
+                                    </Link>
+                                )}
                             </div>
                         ))}
                     </Slider>

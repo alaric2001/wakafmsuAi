@@ -62,7 +62,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                     isOpen={isSidebarOpen}
                 />
                 <SidebarItem
-                    href="#"
+                    href="/admin-carousel"
                     icon={AdminIcons.Carousel}
                     label="Carousel"
                     isOpen={isSidebarOpen}
