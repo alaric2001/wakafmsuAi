@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import AdminIcons from './AdminIcons';
 
 const SidebarItem = ({ href, icon: Icon, label, active, isOpen }) => (
@@ -16,6 +16,8 @@ const SidebarItem = ({ href, icon: Icon, label, active, isOpen }) => (
 );
 
 const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
+    const { url } = usePage();
+
     return (
         <aside
             className={`${isSidebarOpen ? 'w-64' : 'w-20'
@@ -40,13 +42,14 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                     href="/admin-dashboard"
                     icon={AdminIcons.Dashboard}
                     label="Dashboard"
-                    active={true}
+                    active={url.startsWith('/admin-dashboard')}
                     isOpen={isSidebarOpen}
                 />
                 <SidebarItem
-                    href="#"
+                    href="/admin-donasi"
                     icon={AdminIcons.Donasi}
                     label="Donasi"
+                    active={url.startsWith('/admin-donasi')}
                     isOpen={isSidebarOpen}
                 />
                 <SidebarItem
@@ -65,6 +68,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                     href="/admin-carousel"
                     icon={AdminIcons.Carousel}
                     label="Carousel"
+                    active={url.startsWith('/admin-carousel')}
                     isOpen={isSidebarOpen}
                 />
             </nav>

@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Donasi;
 use App\Models\PenyaluranDonasi;
-use App\Models\Carousel; 
+use App\Models\Carousel;
 use App\Http\Requests\StoreDonasiRequest;
 use App\Http\Requests\UpdateDonasiRequest;
+use Illuminate\Http\Request;
 
 use Inertia\Inertia;
 
@@ -34,12 +35,43 @@ class DonasiController extends Controller
         //
     }
 
+    public function adminIndex()
+    {
+        $donasi = Donasi::latest()->get();
+        return Inertia::render('admin/AdminDonasi', ['donasi' => $donasi]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreDonasiRequest $request)
+    public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'target_donasi' => 'required|numeric',
+            'open_donasi' => 'nullable|date',
+            'deskripsi' => 'required|string',
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status_post' => 'required|in:post,hide',
+        ]);
+
+        $filename = null;
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images/donasi'), $filename);
+        }
+
+        Donasi::create([
+            'nama' => $request->nama,
+            'target_donasi' => $request->target_donasi,
+            'open_donasi' => $request->open_donasi,
+            'deskripsi' => $request->deskripsi,
+            'foto' => $filename,
+            'status_post' => $request->status_post,
+        ]);
+
+        return redirect()->back()->with('success', 'Donasi berhasil ditambahkan.');
     }
 
     /**
@@ -49,7 +81,7 @@ class DonasiController extends Controller
     {
         // Eager load relasi 'penyaluranDonasi'
         $donasi->load('penyaluranDonasi');
-        
+
         return Inertia::render('user/DetailDonasi', ['donasi' => $donasi]);
     }
 
@@ -64,9 +96,37 @@ class DonasiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDonasiRequest $request, Donasi $donasi)
+    public function update(Request $request, Donasi $donasi)
     {
-        //
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'target_donasi' => 'required|numeric',
+            'open_donasi' => 'nullable|date',
+            'deskripsi' => 'required|string',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status_post' => 'required|in:post,hide',
+        ]);
+
+        $filename = $donasi->foto;
+        if ($request->hasFile('foto')) {
+            if ($donasi->foto && file_exists(public_path('images/donasi/' . $donasi->foto))) {
+                unlink(public_path('images/donasi/' . $donasi->foto));
+            }
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images/donasi'), $filename);
+        }
+
+        $donasi->update([
+            'nama' => $request->nama,
+            'target_donasi' => $request->target_donasi,
+            'open_donasi' => $request->open_donasi,
+            'deskripsi' => $request->deskripsi,
+            'foto' => $filename,
+            'status_post' => $request->status_post,
+        ]);
+
+        return redirect()->back()->with('success', 'Donasi berhasil diperbarui.');
     }
 
     /**
@@ -74,6 +134,11 @@ class DonasiController extends Controller
      */
     public function destroy(Donasi $donasi)
     {
-        //
+        if ($donasi->foto && file_exists(public_path('images/donasi/' . $donasi->foto))) {
+            unlink(public_path('images/donasi/' . $donasi->foto));
+        }
+
+        $donasi->delete();
+        return redirect()->back()->with('success', 'Donasi berhasil dihapus.');
     }
 }

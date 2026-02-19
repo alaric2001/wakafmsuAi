@@ -47,6 +47,7 @@ Route::get('/admin-dashboard', function () {
 });
 
 Route::get('/admin-carousel', [CarouselController::class, 'adminIndex'])->name('admin.carousel.index');
+Route::get('/admin-donasi', [DonasiController::class, 'adminIndex'])->name('admin.donasi.index');
 
 
 require __DIR__ . '/settings.php';
