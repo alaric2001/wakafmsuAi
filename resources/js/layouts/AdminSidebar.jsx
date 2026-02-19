@@ -53,9 +53,10 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                     isOpen={isSidebarOpen}
                 />
                 <SidebarItem
-                    href="#"
+                    href="/admin-penyaluran"
                     icon={AdminIcons.Penyaluran}
                     label="Penyaluran Donasi"
+                    active={url.startsWith('/admin-penyaluran')}
                     isOpen={isSidebarOpen}
                 />
                 <SidebarItem

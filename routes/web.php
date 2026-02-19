@@ -4,6 +4,7 @@ use App\Http\Controllers\CarouselController;
 use App\Http\Controllers\DonasiController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentCallbackController;
+use App\Http\Controllers\PenyaluranDonasiController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -12,7 +13,6 @@ use Inertia\Inertia;
 Route::get('/', [DonasiController::class, 'index']);
 
 Route::resource('donasi', DonasiController::class)->except('index');
-Route::resource('carousels', CarouselController::class);
 
 // Route::get('/', function () {
 //     return Inertia::render('welcome');
@@ -49,6 +49,9 @@ Route::get('/admin-dashboard', function () {
 Route::get('/admin-carousel', [CarouselController::class, 'adminIndex'])->name('admin.carousel.index');
 Route::get('/admin-donasi', [DonasiController::class, 'adminIndex'])->name('admin.donasi.index');
 
+Route::resource('penyaluran', PenyaluranDonasiController::class);
+Route::get('/admin-penyaluran', [PenyaluranDonasiController::class, 'adminIndex'])->name('admin.penyaluran.index');
+Route::resource('carousels', CarouselController::class);
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

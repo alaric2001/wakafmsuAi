@@ -10,4 +10,9 @@ class PenyaluranDonasi extends Model
     use HasFactory;
     protected $table = 'penyaluran_donasi';
     protected $guarded = [];
+
+    public function donasi()
+    {
+        return $this->belongsTo(Donasi::class, 'id_donasi');
+    }
 }
