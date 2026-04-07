@@ -55,11 +55,11 @@ export default function UserLayout({ children }) {
                     <div className="flex items-center space-x-4">
                         {/* Tombol Login & Registrasi */}
                         <a href="/login" className="px-4 py-2 rounded-md bg-primary-green text-white hover:bg-green-700 transition-colors">
-                            Login
+                            Admin Login
                         </a>
-                        <a href="/register" className="px-4 py-2 rounded-md border border-primary-green text-primary-green hover:bg-primary-green hover:text-white transition-colors">
+                        {/* <a href="/register" className="px-4 py-2 rounded-md border border-primary-green text-primary-green hover:bg-primary-green hover:text-white transition-colors">
                             Registrasi
-                        </a>
+                        </a> */}
                     </div>
                 </div>
             </nav>
