@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,11 +13,18 @@ return new class extends Migration
         Schema::create('donasi', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->bigInteger('target_donasi');
+
+            // Menggunakan unsigned agar tidak ada nominal negatif
+            $table->unsignedBigInteger('target_donasi');
+            $table->unsignedBigInteger('collected')->default(0);
+
             $table->date('open_donasi')->nullable();
             $table->text('deskripsi');
             $table->string('foto')->nullable();
-            $table->enum('status_post', ['post', 'hide']);
+
+            // Tambahkan default agar tidak error jika tidak diisi saat create
+            $table->enum('status_post', ['post', 'hide'])->default('hide');
+
             $table->timestamps();
         });
     }

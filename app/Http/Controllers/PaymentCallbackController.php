@@ -19,6 +19,7 @@ class PaymentCallbackController extends Controller
         } elseif ($status == 'cancel' || $status == 'deny' || $status == 'expire') {
             $payment->update(['status' => 'failed']);
         }
+        // $donasi->increment('collected', $transaksi->amount);
 
         return response()->json(['success' => true]);
     }
